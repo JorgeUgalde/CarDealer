@@ -1,0 +1,21 @@
+﻿@model VehicleModelVM
+
+<form method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Create Model</h2>
+        </div>
+        <div class="mb-3">
+            <label asp-for="VehicleModel.Name" class="p-0"></label>
+            <input asp-for="VehicleModel.Name" type="text" class="form-control"/>
+            <span asp-validation-for="VehicleModel.Name" class="text-danger"></span>
+        </div>
+
+        <h1>Agregar lista de marcas</h1>
+
+        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
+        <a asp-controller="Make" asp-action="Index" class="btn btn-secondary">Return to list</a>
+
+    </div>
+    
+</form>
