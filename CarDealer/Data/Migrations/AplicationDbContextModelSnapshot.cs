@@ -39,6 +39,39 @@ namespace CarDealer.Data.Migrations
                     b.ToTable("Makes");
                 });
 
+            modelBuilder.Entity("CarDealer.Models.Vehicle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PictureURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleModelID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleModelID");
+
+                    b.ToTable("Vehicles");
+                });
+
             modelBuilder.Entity("CarDealer.Models.VehicleModel", b =>
                 {
                     b.Property<int>("Id")
@@ -59,6 +92,17 @@ namespace CarDealer.Data.Migrations
                     b.HasIndex("MakeID");
 
                     b.ToTable("Models");
+                });
+
+            modelBuilder.Entity("CarDealer.Models.Vehicle", b =>
+                {
+                    b.HasOne("CarDealer.Models.VehicleModel", "Model")
+                        .WithMany()
+                        .HasForeignKey("VehicleModelID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("CarDealer.Models.VehicleModel", b =>

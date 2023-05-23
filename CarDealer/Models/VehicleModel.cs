@@ -11,10 +11,13 @@ namespace CarDealer.Models
         [Display(Name = "Model Name")]
         public string Name { get; set; }
 
+        [Display(Name="Make")]
         public int MakeID { get; set;}
 
         [ForeignKey("MakeID")]
         public Make Make { get; set;}
+
+
                
     }
 }

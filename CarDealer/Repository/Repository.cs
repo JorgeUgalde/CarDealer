@@ -34,9 +34,16 @@ namespace CarDealer.Repository
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(String? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+
+            if (includeProperties != null)
+            {
+                foreach (var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries)) { 
+                query = query.Include(property);
+                }
+            }
             return query.ToList();
         }
 

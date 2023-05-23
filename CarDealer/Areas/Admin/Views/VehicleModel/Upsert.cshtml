@@ -1,0 +1,34 @@
+﻿@model VehicleModelVM
+
+<form method="post">
+
+    <input asp-for="VehicleModel.Id" hidden/>
+
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            
+            @*Otra forma en caso de recibir un modelo
+            <h2 class="text-primary">@(Model.VehicleModel.Id == 0 ? "Create" : "Update") Model</h2>*@
+            <h2 class="text-primary"> @TempData["edit/create"] Model </h2>
+        </div>
+        <div class="mb-3">
+            <label asp-for="VehicleModel.Name" class="p-0"></label>
+            <input asp-for="VehicleModel.Name" type="text" class="form-control"/>
+            <span asp-validation-for="VehicleModel.Name" class="text-danger"></span>
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="VehicleModel.MakeID" class="p-0"></label>
+            <select asp-for="VehicleModel.MakeID" asp-items="@Model.MakeList" class="form-select">
+                <option disabled selected>---- Select Make ----</option>
+            </select>
+            <span asp-validation-for="VehicleModel.MakeID" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
+        <a asp-controller="VehicleModel" asp-action="Index" class="btn btn-secondary">Return to list</a>
+
+    </div>
+    
+</form>

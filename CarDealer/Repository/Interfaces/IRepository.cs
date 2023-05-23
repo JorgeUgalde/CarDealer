@@ -4,7 +4,7 @@ namespace CarDealer.Repository.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(String? includeProperties=null);
 
 
         // Va a traer una expresion, con esta forma, un valor de retorno y el nombre que se llama filtro

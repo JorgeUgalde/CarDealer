@@ -86,8 +86,13 @@ namespace CarDealer.Areas.Admin.Controllers
             {
                 _unitOfWork.Make.Update(make);
                 _unitOfWork.Save();
+                TempData["success"] = "Make edited succesfully";
             }
-            TempData["success"] = "Make edited succesfully";
+            else
+            {
+                TempData["error"] = "Error editing make";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -123,7 +128,9 @@ namespace CarDealer.Areas.Admin.Controllers
             Make? makeFromDB = _unitOfWork.Make.Get(x => x.Id == Id);
             if (makeFromDB == null)
             {
+                TempData["error"] = "Error deleting make";
                 return NotFound();
+
             }
             _unitOfWork.Make.remove(makeFromDB);
             _unitOfWork.Save();
@@ -164,9 +171,12 @@ namespace CarDealer.Areas.Admin.Controllers
                 {
                     _unitOfWork.Make.add(make);
                     _unitOfWork.Save();
+                    TempData["success"] = "Make created succesfully";
                 }
-                TempData["success"] = "Make created succesfully";
-
+                else
+                {
+                    TempData["error"] = "Error creating make";
+                }
                 return RedirectToAction("Index");
             }
             else
@@ -176,12 +186,28 @@ namespace CarDealer.Areas.Admin.Controllers
                     makeFromDB.Name = make.Name;
                     _unitOfWork.Make.Update(makeFromDB);
                     _unitOfWork.Save();
+                    TempData["success"] = "Make edited succesfully";
                 }
-                TempData["success"] = "Make edited succesfully";
+                else
+                {
+                    TempData["error"] = "Error editing make";
+                }
+               
                 return RedirectToAction("Index");
             }
         }
 
+
+        #region API
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var makeList = _unitOfWork.Make.GetAll();
+            return Json(new { data = makeList });
+        }
+
+        #endregion
 
 
     }

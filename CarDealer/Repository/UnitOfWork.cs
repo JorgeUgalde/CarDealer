@@ -9,14 +9,19 @@ namespace CarDealer.Repository
 
 
 
-        public IMakeRepository Make { get; private set; }
+        public IMakeRepository Make { get; private set; }  
+        public IVehicleModelRepository VehicleModel { get; private set; }
+        public IVehicleRepository Vehicle { get; private set; }
 
 
         //Asi corrije el error del DB, se envia a la clase base el _db
-        public UnitOfWork(AplicationDbContext db) 
+
+        public UnitOfWork(AplicationDbContext db)
         {
             _db = db;
             Make = new MakeRepository(_db);
+            VehicleModel = new VehicleModelRepository(_db);
+            Vehicle = new VehicleRepository(_db);
         }
 
 

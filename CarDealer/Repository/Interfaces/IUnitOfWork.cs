@@ -4,6 +4,8 @@
     {
 
         IMakeRepository Make { get; }
+        IVehicleModelRepository VehicleModel { get; }
+        IVehicleRepository Vehicle { get; }
 
         void Save();
 

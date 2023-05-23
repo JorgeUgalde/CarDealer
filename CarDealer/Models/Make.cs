@@ -3,8 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarDealer.Models
 {
-
-
     public class Make
     {
         [Key] //llave primaria a algun Id que se llame de otra forma
@@ -21,4 +19,5 @@ namespace CarDealer.Models
             return Name;
         }
     }
+
 }

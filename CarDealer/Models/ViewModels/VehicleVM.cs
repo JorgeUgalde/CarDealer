@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace CarDealer.Models.ViewModels
 
 {
-    public class VehicleModelVM
+    public class VehicleVM
     {
         [ValidateNever]
-        public VehicleModel VehicleModel { get; set; }
+        public Vehicle Vehicle { get; set; }
         
         [ValidateNever]
-        public IEnumerable<SelectListItem> MakeList { get; set; }
+        public IEnumerable<SelectListItem> VehicleModelList { get; set; }
     }
 }
