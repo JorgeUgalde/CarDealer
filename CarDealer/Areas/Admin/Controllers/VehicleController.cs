@@ -1,4 +1,5 @@
-﻿using CarDealer.Models;
+﻿using CarDealer.Data;
+using CarDealer.Models;
 using CarDealer.Models.ViewModels;
 using CarDealer.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,10 @@ namespace CarDealer.Areas.Admin.Controllers
     [Area("Admin")]
     public class VehicleController : Controller
     {
-
-
-
         private readonly IUnitOfWork _unitOfWork;
 
         private IWebHostEnvironment _webHostEnvironment;
+
 
         public VehicleController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
         {
@@ -26,10 +25,10 @@ namespace CarDealer.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<Vehicle> vehicleList = _unitOfWork.Vehicle.GetAll().ToList();
-
-            return View(vehicleList);
+            List<Vehicle> VehicleList = _unitOfWork.Vehicle.GetAll().ToList();
+            return View(VehicleList);
         }
+
 
         [HttpGet]
         public IActionResult Create()
@@ -37,118 +36,33 @@ namespace CarDealer.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Create(Vehicle vehicle)
-        {
-            // Esto para validar que no exista
-            //vehicle find = _db.vehicles.FirstOrDefault(vehicle);
-            //if (find == null)
-            //{ }
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Vehicle.add(vehicle);
-                _unitOfWork.Save();
-            }
-
-            TempData["success"] = "Vehicle created succesfully";
-
-
-            return RedirectToAction("Index");
-        }
-
-
-        [HttpGet]
-        public IActionResult Edit(int? id)
-        {
-
-            if (id == null || id <= 0)
-            {
-                return NotFound();
-            }
-
-            //si el id es valido, cargo la info de la bd
-
-            Vehicle? vehicleFromDB = _unitOfWork.Vehicle.Get(x => x.Id == id);
-
-            //Otras formas de traer objetos
-            //vehicle? vehicle1 = db.vehicles.FirstOrDefault(x => x.Name == "Audi");
-            //vehicle? vehicle2 = db.vehicles.Where(x => x.Id == id).FirstOrDefault();
-
-            //Valido si el Id existe en la BD
-            if (vehicleFromDB == null)
-            {
-                return NotFound();
-            }
-
-            return View(vehicleFromDB);
-        }
-
 
         [HttpPost]
-        public IActionResult Edit(Vehicle vehicle)
+        public IActionResult Create(Vehicle Vehicle)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Vehicle.Update(vehicle);
+                _unitOfWork.Vehicle.Add(Vehicle);
                 _unitOfWork.Save();
-                TempData["success"] = "Vehicle edited succesfully";
+                TempData["success"] = "Vehicle created successfully";
             }
-            else
-            {
-                TempData["error"] = "Error editing vehicle";
+            else {
+                TempData["error"] = "Error creating Vehicle";
             }
 
+           
             return RedirectToAction("Index");
+
         }
 
 
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-
-            if (id == null || id <= 0)
-            {
-                return NotFound();
-            }
-
-            //si el id es valido, cargo la info de la bd
-
-            Vehicle? vehicleFromDB = _unitOfWork.Vehicle.Get(x => x.Id == id);
-
-            //Valido si el Id existe en la BD
-            if (vehicleFromDB == null)
-            {
-                return NotFound();
-            }
-
-            return View(vehicleFromDB);
-        }
-
-
-
-        [HttpPost, ActionName("Delete")]
-
-        public IActionResult DeletePOST(int? Id)
-        {
-            Vehicle? vehicleFromDB = _unitOfWork.Vehicle.Get(x => x.Id == Id);
-            if (vehicleFromDB == null)
-            {
-                TempData["error"] = "Error deleting vehicle";
-                return NotFound();
-
-            }
-            _unitOfWork.Vehicle.remove(vehicleFromDB);
-            _unitOfWork.Save();
-            TempData["success"] = "vehicle deleted succesfully";
-            return RedirectToAction("Index");
-        }
         [HttpGet]
         public IActionResult Upsert(int? id)
         {
             VehicleVM myModel = new()
             {
                 Vehicle = new(),
-                VehicleModelList = _unitOfWork.VehicleModel.GetAll(includeProperties: "Make").Select(i => new SelectListItem
+                VehicleModelList = _unitOfWork.VehicleModel.GetAll(includeProperties:"Make").Select(i => new SelectListItem
                 {
                     Text = i.Make.Name + " " + i.Name,
                     Value = i.Id.ToString()
@@ -166,66 +80,102 @@ namespace CarDealer.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public IActionResult Upsert(VehicleVM? vehicleVM, IFormFile? file)
-        {
-            if (ModelState.IsValid)
-            {
-                {
+        public IActionResult Upsert(VehicleVM _vehicleVm, IFormFile? file) {
+            if (ModelState.IsValid) {
 
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-                    if (file != null)
-                    {
-                        //generar un GUID
-                        String fileName = Guid.NewGuid().ToString();
-                        var uploads = Path.Combine(wwwRootPath, @"images\vehicles");
-                        var extension = Path.GetExtension(file.FileName);
-                    }
+                if (file != null)
+                { 
+                    string fileName = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(wwwRootPath,@"images\vehicles");
+                    var extension = Path.GetExtension(file.FileName);
+
                 }
             }
 
-
-            return RedirectToAction();
+            return RedirectToAction("Index");
         }
 
-                    //    _unitOfWork.Vehicle.add(vehicle);
-                    //    _unitOfWork.Save();
-                    //    TempData["success"] = "Vehicle created succesfully";
-                    //}
-                    //else
-                    //{
-                    //    TempData["error"] = "Error creating Vehicle";
-                    //}
-                    //return RedirectToAction("Index");
 
 
-                    //if (ModelState.IsValid)
-                    //{
-                    //    vehicleFromDB.PictureURL = vehicle.PictureURL;
-                    //    vehicleFromDB.Price = vehicle.Price;
-                    //    vehicleFromDB.Description = vehicle.Description;
-                    //    vehicleFromDB.PictureURL = vehicle.PictureURL;
-                    //    _unitOfWork.Vehicle.Update(vehicleFromDB);
-                    //    _unitOfWork.Save();
-                    //    TempData["success"] = "Vehicle edited succesfully";
-                    //}
-                    //else
-                    //{
-                    //    TempData["error"] = "Error editing Vehicle";
-                    //}
 
-                    //return RedirectToAction("Index");
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id <= 0)
+            {
+                return NotFound();
+            }
+            Vehicle? VehiclefromDb = _unitOfWork.Vehicle.Get(x => x.Id == id);
+
+            if (VehiclefromDb == null)
+            {
+                return NotFound();
+            }
+            return View(VehiclefromDb);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Vehicle Vehicle)
+        {
+            if (ModelState.IsValid)
+            {
+                _unitOfWork.Vehicle.Update(Vehicle);
+                _unitOfWork.Save();
+            }
+
+            TempData["success"] = "Vehicle updated successfully";
+            return RedirectToAction("Index");
+
+        }
+
+
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id <= 0)
+            {
+                return NotFound();
+            }
+            Vehicle? VehiclefromDb = _unitOfWork.Vehicle.Get(x => x.Id == id);
+            if (VehiclefromDb == null)
+            {
+                return NotFound();
+            }
+            return View(VehiclefromDb);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePOST(int? id)
+        {
+            Vehicle? VehicleFromDb = _unitOfWork.Vehicle.Get(x => x.Id == id);
+            if (VehicleFromDb == null)
+            {
+                return NotFound();
+            }
+            _unitOfWork.Vehicle.Remove(VehicleFromDb);
+            _unitOfWork.Save();
+
+            TempData["success"] = "Vehicle deleted successfully";
+            return RedirectToAction("Index");
+        }
+
+
 
         #region API
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var vehicleList = _unitOfWork.Vehicle.GetAll("Model,Model.Make");
-            return Json(new { data = vehicleList });
+            var VehicleList = _unitOfWork.Vehicle.GetAll(includeProperties: "Model,Model.Make");
+            return Json(new { data = VehicleList });
         }
 
         #endregion
-    }
 
+    }
 }

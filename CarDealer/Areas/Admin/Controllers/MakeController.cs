@@ -2,7 +2,6 @@
 using CarDealer.Models;
 using CarDealer.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CarDealer.Areas.Admin.Controllers
 {
@@ -10,7 +9,6 @@ namespace CarDealer.Areas.Admin.Controllers
     public class MakeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-
 
         public MakeController(IUnitOfWork unitOfWork)
         {
@@ -22,9 +20,9 @@ namespace CarDealer.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Make> makeList = _unitOfWork.Make.GetAll().ToList();
-
             return View(makeList);
         }
+
 
         [HttpGet]
         public IActionResult Create()
@@ -32,52 +30,41 @@ namespace CarDealer.Areas.Admin.Controllers
             return View();
         }
 
+
         [HttpPost]
         public IActionResult Create(Make make)
         {
-            // Esto para validar que no exista
-            //Make find = _db.Makes.FirstOrDefault(make);
-            //if (find == null)
-            //{ }
             if (ModelState.IsValid)
             {
-                _unitOfWork.Make.add(make);
+                _unitOfWork.Make.Add(make);
                 _unitOfWork.Save();
+                TempData["success"] = "Make created successfully";
+            }
+            else {
+                TempData["error"] = "Error creating make";
             }
 
-            TempData["success"] = "Make created succesfully";
-
-
+           
             return RedirectToAction("Index");
+
         }
 
 
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-
             if (id == null || id <= 0)
             {
                 return NotFound();
             }
+            Make? makefromDb = _unitOfWork.Make.Get(x => x.Id == id);
 
-            //si el id es valido, cargo la info de la bd
-
-            Make? makeFromDB = _unitOfWork.Make.Get(x => x.Id == id);
-
-            //Otras formas de traer objetos
-            //Make? make1 = db.Makes.FirstOrDefault(x => x.Name == "Audi");
-            //Make? make2 = db.Makes.Where(x => x.Id == id).FirstOrDefault();
-
-            //Valido si el Id existe en la BD
-            if (makeFromDB == null)
+            if (makefromDb == null)
             {
                 return NotFound();
             }
-
-            return View(makeFromDB);
+            return View(makefromDb);
         }
-
 
         [HttpPost]
         public IActionResult Edit(Make make)
@@ -86,116 +73,46 @@ namespace CarDealer.Areas.Admin.Controllers
             {
                 _unitOfWork.Make.Update(make);
                 _unitOfWork.Save();
-                TempData["success"] = "Make edited succesfully";
-            }
-            else
-            {
-                TempData["error"] = "Error editing make";
             }
 
+            TempData["success"] = "Make updated successfully";
             return RedirectToAction("Index");
+
         }
+
 
 
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-
             if (id == null || id <= 0)
             {
                 return NotFound();
             }
-
-            //si el id es valido, cargo la info de la bd
-
-            Make? makeFromDB = _unitOfWork.Make.Get(x => x.Id == id);
-
-            //Valido si el Id existe en la BD
-            if (makeFromDB == null)
+            Make? makefromDb = _unitOfWork.Make.Get(x => x.Id == id);
+            if (makefromDb == null)
             {
                 return NotFound();
             }
-
-            return View(makeFromDB);
+            return View(makefromDb);
         }
-
 
 
         [HttpPost, ActionName("Delete")]
-
-        public IActionResult DeletePOST(int? Id)
+        public IActionResult DeletePOST(int? id)
         {
-            Make? makeFromDB = _unitOfWork.Make.Get(x => x.Id == Id);
-            if (makeFromDB == null)
+            Make? makeFromDb = _unitOfWork.Make.Get(x => x.Id == id);
+            if (makeFromDb == null)
             {
-                TempData["error"] = "Error deleting make";
                 return NotFound();
-
             }
-            _unitOfWork.Make.remove(makeFromDB);
+            _unitOfWork.Make.Remove(makeFromDb);
             _unitOfWork.Save();
-            TempData["success"] = "Make deleted succesfully";
+
+            TempData["success"] = "Make deleted successfully";
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public IActionResult Upsert(int? id)
-        {
-            if (id != null)
-            {
-
-                Make? makeFromDB = _unitOfWork.Make.Get(x => x.Id == id);
-
-                //Valido si el Id existe en la BD
-                if (makeFromDB == null)
-                {
-                    return NotFound();
-                }
-                TempData["edit/create"] = "Edit";
-                return View(makeFromDB);
-            }
-
-            TempData["edit/create"] = "Create";
-            return View();
-        }
-
-
-        [HttpPost]
-        public IActionResult Upsert(Make? make)
-        {
-            Make? makeFromDB = _unitOfWork.Make.Get(x => x.Id == make.Id);
-            // create
-            if (makeFromDB == null)
-            {
-                if (ModelState.IsValid)
-                {
-                    _unitOfWork.Make.add(make);
-                    _unitOfWork.Save();
-                    TempData["success"] = "Make created succesfully";
-                }
-                else
-                {
-                    TempData["error"] = "Error creating make";
-                }
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                if (ModelState.IsValid)
-                {
-                    makeFromDB.Name = make.Name;
-                    _unitOfWork.Make.Update(makeFromDB);
-                    _unitOfWork.Save();
-                    TempData["success"] = "Make edited succesfully";
-                }
-                else
-                {
-                    TempData["error"] = "Error editing make";
-                }
-               
-                return RedirectToAction("Index");
-            }
-        }
 
 
         #region API
@@ -209,7 +126,5 @@ namespace CarDealer.Areas.Admin.Controllers
 
         #endregion
 
-
     }
-
 }

@@ -1,17 +1,16 @@
-﻿
-using CarDealer.Data;
+﻿using CarDealer.Data;
 using CarDealer.Models;
 using CarDealer.Repository.Interfaces;
+using System.Linq.Expressions;
 
 namespace CarDealer.Repository
 {
-    public class VehicleRepository : Repository<Vehicle> ,IVehicleRepository
+    public class VehicleRepository : Repository<Vehicle>, IVehicleRepository
     {
-        private AplicationDbContext _db;
 
+        private ApplicationDbContext _db;
 
-        //Asi corrije el error del DB, se envia a la clase base el _db
-        public VehicleRepository(AplicationDbContext db) : base(db)
+        public VehicleRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
@@ -22,4 +21,3 @@ namespace CarDealer.Repository
         }
     }
 }
-

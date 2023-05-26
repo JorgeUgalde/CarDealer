@@ -1,21 +1,16 @@
-﻿
-
-
-using CarDealer.Data;
+﻿using CarDealer.Data;
 using CarDealer.Models;
 using CarDealer.Repository.Interfaces;
 using System.Linq.Expressions;
 
 namespace CarDealer.Repository
 {
-    public class MakeRepository : Repository<Make> ,IMakeRepository
+    public class MakeRepository : Repository<Make>, IMakeRepository
     {
 
-        private AplicationDbContext _db;
+        private ApplicationDbContext _db;
 
-
-        //Asi corrije el error del DB, se envia a la clase base el _db
-        public MakeRepository(AplicationDbContext db) : base(db)
+        public MakeRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
@@ -24,9 +19,5 @@ namespace CarDealer.Repository
         {
             _db.Makes.Update(obj);
         }
-
     }
-
-
-
 }

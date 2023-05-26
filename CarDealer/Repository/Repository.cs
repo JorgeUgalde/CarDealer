@@ -3,60 +3,55 @@ using CarDealer.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-
-
-
 namespace CarDealer.Repository
-
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly AplicationDbContext _db;
+        private readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
 
-        //Constructor 
-        public Repository(AplicationDbContext db)
+        public Repository(ApplicationDbContext db)
         {
             _db = db;
-            this.dbSet = _db.Set<T>();
+            dbSet = _db.Set<T>();
         }
 
-        public void add(T entity)
+        public void Add(T entity)
         {
             dbSet.Add(entity);
         }
-
-        //Cuando recibo una expresion para buscar segun se requiera y se retorne por el filtro buscado
-        public T Get(Expression<Func<T, bool>> Filter)
+        public T Get(Expression<Func<T, bool>> filter)
         {
             IQueryable<T> query = dbSet;
-            query = query.Where(Filter);
+            query = query.Where(filter);
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(String? includeProperties = null)
+
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
 
             if (includeProperties != null)
             {
-                foreach (var property in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries)) { 
-                query = query.Include(property);
+                foreach (var prop in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(prop);
                 }
             }
+
             return query.ToList();
         }
 
-        public void remove(T entity)
+
+        public void Remove(T entity)
         {
-           dbSet.Remove(entity);
+            dbSet.Remove(entity);
         }
 
         public void RemoveRange(IEnumerable<T> entities)
         {
             dbSet.RemoveRange(entities);
         }
-
-
     }
 }

@@ -14,7 +14,7 @@ function loadDataTable() {
             { "data": "name", "width": "30%" },
             {
                 "data": "id",
-                "render": function (data) {
+                "render": function(data) {
                     return `
                     <a href="/Admin/VehicleModel/Upsert/${data}" 
                     class="btn btn-primary mx-2">
@@ -33,6 +33,7 @@ function loadDataTable() {
     });
 }
 
+
 function Delete(_id) {
     Swal.fire({
         title: 'Are you sure?',
@@ -48,7 +49,7 @@ function Delete(_id) {
             $.ajax({
                 url: _url,
                 type: "DELETE",
-                success: function (data) {
+                success: function(data) {
                     if (data.success) {
                         dataTable.ajax.reload();
                         toastr.success(data.message);
@@ -57,21 +58,10 @@ function Delete(_id) {
                         toastr.error(data.message);
                     }
                 }
-            });
+            }); 
         }
     })
 }
-
-// Modelo de Vehicle
-/**
- * Make make
- * Model (vehicle Model)
- * Year (int 1950 - actual)
- * Description string
- * Precio number
- * Imagen, URL string
- */
-
 
 
 

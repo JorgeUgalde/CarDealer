@@ -5,7 +5,7 @@
 namespace CarDealer.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Migration1 : Migration
+    public partial class _1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace CarDealer.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,18 +49,18 @@ namespace CarDealer.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Price = table.Column<int>(type: "int", nullable: false),
-                    PictureURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VehicleModelID = table.Column<int>(type: "int", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vehicles_Models_VehicleModelID",
-                        column: x => x.VehicleModelID,
+                        name: "FK_Vehicles_Models_ModelId",
+                        column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -72,9 +72,9 @@ namespace CarDealer.Data.Migrations
                 column: "MakeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehicles_VehicleModelID",
+                name: "IX_Vehicles_ModelId",
                 table: "Vehicles",
-                column: "VehicleModelID");
+                column: "ModelId");
         }
 
         /// <inheritdoc />

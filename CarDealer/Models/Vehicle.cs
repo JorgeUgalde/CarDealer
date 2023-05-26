@@ -1,38 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿//using Microsoft.Build.Framework;
 using System.ComponentModel.DataAnnotations;
-using NPOI.SS.Formula.Functions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarDealer.Models
 {
     public class Vehicle
     {
-        [Key]
         public int Id { get; set; }
 
 
-        [ForeignKey("VehicleModelID")]
-        public VehicleModel Model { get; set; }
+        public int ModelId { get; set; }
 
+        [Required]
+        [ForeignKey("ModelId")]
+        public VehicleModel Model { get; set; }
 
         [Required]
         [CurrentYearValidation]
         public int Year { get; set; }
 
-
         [Required]
-        [MaxLength(200)]
         public string Description { get; set; }
 
         [Required]
-        public int Price { get; set; }
-
-        [Required]
-        public string PictureURL { get; set; }
+        public double Price { get; set; }
 
 
-        [Required]
-        [Display(Name = "ModelID")]
-        public int VehicleModelID { get; set; }
+        public string PictureUrl { get; set; }
 
     }
 
@@ -44,10 +38,8 @@ namespace CarDealer.Models
             {
                 return ValidationResult.Success;
             }
-
             return new ValidationResult("Year must be between 1950 and the current year +1");
         }
     }
 
 }
-

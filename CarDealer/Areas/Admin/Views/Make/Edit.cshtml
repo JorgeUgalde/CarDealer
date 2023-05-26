@@ -1,28 +1,22 @@
 ﻿@model Make
 
-
 <form method="post">
 
-
-    @*si el campo id se llama diferente, por ejemplo make_Id se hace 
-    // <input asp-for="make_Id" hidden></input>  para guardar el dato del id en algun lugar *@
-
+    @*<input asp-for="Id" hidden />*@
 
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary"> Edit Make </h2>
+            <h2 class="text-primary"> Edit Make</h2>
         </div>
-
         <div class="mb-3">
             <label asp-for="Name" class="p-0"></label>
             <input asp-for="Name" type="text" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger">   </span>
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary " style="width:150px">Edit</button>
-        <a asp-controller="Make" asp-action="Index" class="btn btn-secondary"> Return to list</a>
+        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
+        <a asp-controller="Make" asp-action="Index" class="btn btn-secondary">Return to list</a>
+
     </div>
 
-
 </form>
-

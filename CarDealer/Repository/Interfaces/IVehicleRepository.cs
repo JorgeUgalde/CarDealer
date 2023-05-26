@@ -4,7 +4,6 @@ namespace CarDealer.Repository.Interfaces
 {
     public interface IVehicleRepository : IRepository<Vehicle>
     {
-
-        void Update(Vehicle vehicle);
+        void Update(Vehicle Vehicle);
     }
 }

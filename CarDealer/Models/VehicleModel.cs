@@ -7,17 +7,19 @@ namespace CarDealer.Models
     {
         [Key]
         public int Id { get; set; }
+
+
         [Required]
-        [Display(Name = "Model Name")]
+        [Display(Name="Model Name")]
         public string Name { get; set; }
 
+
+
         [Display(Name="Make")]
-        public int MakeID { get; set;}
+        public int MakeID { get; set; }
 
         [ForeignKey("MakeID")]
-        public Make Make { get; set;}
+        public Make Make { get; set; }
 
-
-               
     }
 }

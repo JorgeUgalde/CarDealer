@@ -4,16 +4,10 @@ namespace CarDealer.Repository.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll(String? includeProperties=null);
-
-
-        // Va a traer una expresion, con esta forma, un valor de retorno y el nombre que se llama filtro
-        T Get(Expression<Func<T, bool>> Filter);
-        void add(T entity);
-
-        void remove(T entity);
-
+        IEnumerable<T> GetAll(string? includeProperties=null);
+        T Get(Expression<Func<T, bool>> filter);
+        void Add(T entity);
+        void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
-
     }
 }

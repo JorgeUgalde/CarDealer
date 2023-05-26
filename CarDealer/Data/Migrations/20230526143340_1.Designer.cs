@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarDealer.Data.Migrations
 {
-    [DbContext(typeof(AplicationDbContext))]
-    [Migration("20230523154852_Migration 1")]
-    partial class Migration1
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20230526143340_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,8 +34,8 @@ namespace CarDealer.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -52,25 +52,24 @@ namespace CarDealer.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PictureURL")
+                    b.Property<int>("ModelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PictureUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VehicleModelID")
-                        .HasColumnType("int");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleModelID");
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Vehicles");
                 });
@@ -101,7 +100,7 @@ namespace CarDealer.Data.Migrations
                 {
                     b.HasOne("CarDealer.Models.VehicleModel", "Model")
                         .WithMany()
-                        .HasForeignKey("VehicleModelID")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

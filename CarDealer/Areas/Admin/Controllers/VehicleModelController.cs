@@ -1,8 +1,9 @@
 ﻿using CarDealer.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using CarDealer.Models.ViewModels;
 using CarDealer.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.JSInterop.Implementation;
 
 namespace CarDealer.Areas.Admin.Controllers
 {
@@ -19,30 +20,32 @@ namespace CarDealer.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        #region HTTP_GET_POST
         public IActionResult Index()
         {
             return View();
         }
 
-        #region Get_Post
 
         [HttpGet]
         public IActionResult Upsert(int? id)
         {
-            VehicleVM myModel = new()
+            VehicleModelVM myModel = new()
             {
-                Vehicle = new(),
-                VehicleModelList = _unitOfWork.VehicleModel.GetAll(includeProperties:"Make").Select(i => new SelectListItem
+                VehicleModel = new(),
+                MakeList = _unitOfWork.Make.GetAll().Select(i => new SelectListItem
                 {
-                    Text = i.Make.Name + " " + i.Name,
+                    Text = i.Name,
                     Value = i.Id.ToString()
                 })
             };
+
             if (id == null || id == 0)
             {
                 return View(myModel);
             }
-            myModel.Vehicle = _unitOfWork.Vehicle.Get(u => u.Id == id);
+
+            myModel.VehicleModel = _unitOfWork.VehicleModel.Get(u => u.Id == id);
             return View(myModel);
         }
 
@@ -54,72 +57,46 @@ namespace CarDealer.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 if (_vehicleModel.VehicleModel.Id == 0)
-                    _unitOfWork.VehicleModel.add(_vehicleModel.VehicleModel);
+                    _unitOfWork.VehicleModel.Add(_vehicleModel.VehicleModel);
                 else
                     _unitOfWork.VehicleModel.Update(_vehicleModel.VehicleModel);
 
                 _unitOfWork.Save();
                 TempData["success"] = "Model saved successfully";
             }
-            else
-            {
-                TempData["error"] = "Error creating model";
-            }
-
-
-            return RedirectToAction("Index");
-
-        }
-
-
-        [HttpPost]
-        public IActionResult Create(VehicleModelVM model)
-        {
-            // Esto para validar que no exista
-            //Make find = _db.Makes.FirstOrDefault(make);
-            //if (find == null)
-            //{ }
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.VehicleModel.add(model.VehicleModel);
-                _unitOfWork.Save();
-                TempData["success"] = "Model created succesfully";
-            }
-            else
-            {
+            else { 
                 TempData["error"] = "Error creating model";
             }
             return RedirectToAction("Index");
         }
-
         #endregion
 
 
         #region API
 
         [HttpGet]
-        public IActionResult GetAll()
-        {
-            var modelList = _unitOfWork.VehicleModel.GetAll("Make");
+        public IActionResult GetAll() {
+            var modelList = _unitOfWork.VehicleModel.GetAll(includeProperties: "Make");
             return Json(new { data = modelList });
         }
-
-
-        [HttpDelete]
 
         [HttpDelete]
         public IActionResult Delete(int? id)
         {
             var modelToDelete = _unitOfWork.VehicleModel.Get(u => u.Id == id);
+
             if (modelToDelete == null)
                 return Json(new { success = false, message = "Error while deleting" });
-            _unitOfWork.VehicleModel.remove(modelToDelete);
+
+            _unitOfWork.VehicleModel.Remove(modelToDelete);
             _unitOfWork.Save();
 
             return Json(new { success = true, message = "Deleted successfully" });
         }
 
-        #endregion
 
-    }
+            #endregion
+
+
+        }
 }

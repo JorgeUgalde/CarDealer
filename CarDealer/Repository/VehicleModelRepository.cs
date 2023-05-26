@@ -1,21 +1,16 @@
-﻿
-
-
-using CarDealer.Data;
+﻿using CarDealer.Data;
 using CarDealer.Models;
 using CarDealer.Repository.Interfaces;
 using System.Linq.Expressions;
 
 namespace CarDealer.Repository
 {
-    public class VehicleModelRepository : Repository<VehicleModel> ,IVehicleModelRepository
+    public class VehicleModelRepository : Repository<VehicleModel>, IVehicleModelRepository
     {
 
-        private AplicationDbContext _db;
+        private ApplicationDbContext _db;
 
-
-        //Asi corrije el error del DB, se envia a la clase base el _db
-        public VehicleModelRepository(AplicationDbContext db) : base(db)
+        public VehicleModelRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
@@ -24,9 +19,5 @@ namespace CarDealer.Repository
         {
             _db.Models.Update(obj);
         }
-
     }
-
-
-
 }
