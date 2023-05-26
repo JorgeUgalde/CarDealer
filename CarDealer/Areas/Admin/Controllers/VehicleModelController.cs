@@ -11,10 +11,7 @@ namespace CarDealer.Areas.Admin.Controllers
     [Area("Admin")]
     public class VehicleModelController : Controller
     {
-
-
         private readonly IUnitOfWork _unitOfWork;
-
         public VehicleModelController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
