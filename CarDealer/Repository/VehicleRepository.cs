@@ -18,6 +18,8 @@ namespace CarDealer.Repository
         public void Update(Vehicle obj)
         {
             _db.Vehicles.Update(obj);
+            //copiar codigo comentado del profe
+
         }
     }
 }

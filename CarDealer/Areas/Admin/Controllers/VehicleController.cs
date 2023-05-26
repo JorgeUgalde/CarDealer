@@ -46,11 +46,12 @@ namespace CarDealer.Areas.Admin.Controllers
                 _unitOfWork.Save();
                 TempData["success"] = "Vehicle created successfully";
             }
-            else {
+            else
+            {
                 TempData["error"] = "Error creating Vehicle";
             }
 
-           
+
             return RedirectToAction("Index");
 
         }
@@ -62,7 +63,7 @@ namespace CarDealer.Areas.Admin.Controllers
             VehicleVM myModel = new()
             {
                 Vehicle = new(),
-                VehicleModelList = _unitOfWork.VehicleModel.GetAll(includeProperties:"Make").Select(i => new SelectListItem
+                VehicleModelList = _unitOfWork.VehicleModel.GetAll(includeProperties: "Make").Select(i => new SelectListItem
                 {
                     Text = i.Make.Name + " " + i.Name,
                     Value = i.Id.ToString()
@@ -80,20 +81,44 @@ namespace CarDealer.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public IActionResult Upsert(VehicleVM _vehicleVm, IFormFile? file) {
-            if (ModelState.IsValid) {
+        public IActionResult Upsert(VehicleVM _vehicleVm, IFormFile? file)
+        {
+            if (ModelState.IsValid)
+            {
 
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
 
                 if (file != null)
-                { 
+                {
                     string fileName = Guid.NewGuid().ToString();
-                    var uploads = Path.Combine(wwwRootPath,@"images\vehicles");
+                    var uploads = Path.Combine(wwwRootPath, @"images\vehicles");
                     var extension = Path.GetExtension(file.FileName);
 
-                }
-            }
 
+                    if (_vehicleVm.Vehicle.PictureUrl != null) // para las notificaciones
+                    {
+                        var oldImageURL = Path.Combine(wwwRootPath, _vehicleVm.Vehicle.PictureUrl); //img vieja
+                        if (System.IO.File.Exists(oldImageURL))
+                        {
+                            System.IO.File.Delete(oldImageURL);
+                        }
+                    }
+                    using (var fileStrams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                    {
+                        file.CopyTo(fileStrams);
+                    }
+                    _vehicleVm.Vehicle.PictureUrl = @"images\vehicles\" + fileName + extension;
+
+                }
+
+                if (_vehicleVm.Vehicle.Id == 0)
+                    _unitOfWork.Vehicle.Add(_vehicleVm.Vehicle);
+                else
+                    _unitOfWork.Vehicle.Update(_vehicleVm.Vehicle);
+
+                _unitOfWork.Save();
+                TempData["Succes"] = "Vehicle saved succesfully";
+            }
             return RedirectToAction("Index");
         }
 
@@ -131,41 +156,6 @@ namespace CarDealer.Areas.Admin.Controllers
 
         }
 
-
-
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id <= 0)
-            {
-                return NotFound();
-            }
-            Vehicle? VehiclefromDb = _unitOfWork.Vehicle.Get(x => x.Id == id);
-            if (VehiclefromDb == null)
-            {
-                return NotFound();
-            }
-            return View(VehiclefromDb);
-        }
-
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            Vehicle? VehicleFromDb = _unitOfWork.Vehicle.Get(x => x.Id == id);
-            if (VehicleFromDb == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.Vehicle.Remove(VehicleFromDb);
-            _unitOfWork.Save();
-
-            TempData["success"] = "Vehicle deleted successfully";
-            return RedirectToAction("Index");
-        }
-
-
-
         #region API
 
         [HttpGet]
@@ -173,6 +163,29 @@ namespace CarDealer.Areas.Admin.Controllers
         {
             var VehicleList = _unitOfWork.Vehicle.GetAll(includeProperties: "Model,Model.Make");
             return Json(new { data = VehicleList });
+        }
+
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            var vehicleToDelete = _unitOfWork.Vehicle.Get(u => u.Id == id);
+
+            if (vehicleToDelete == null)
+                return Json(new { success = false, message = "Error while deleting" });
+
+            var oldImageURL = Path.Combine(wwwRootPath, vehicleToDelete.PictureUrl); //img vieja
+            if (System.IO.File.Exists(oldImageURL))
+            {
+                System.IO.File.Delete(oldImageURL);
+            }
+
+            _unitOfWork.Vehicle.Remove(vehicleToDelete);
+            _unitOfWork.Save();
+
+            return Json(new { success = true, message = "Deleted successfully" });
         }
 
         #endregion

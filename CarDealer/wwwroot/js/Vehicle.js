@@ -18,7 +18,7 @@ function loadDataTable() {
                 "data": "id",
                 "render": function(data) {
                     return `
-                    <a href="/Admin/VehicleModel/Upsert/${data}" 
+                    <a href="/Admin/Vehicle/Upsert/${data}" 
                     class="btn btn-primary mx-2">
                         <i class="bi bi-pencil-square"></i> Edit
                     </a>

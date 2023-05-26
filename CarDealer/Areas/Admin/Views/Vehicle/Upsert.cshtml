@@ -1,8 +1,10 @@
 ﻿@model VehicleVM
 
-<form method="post">
+@*La parte del Qasp-action es opcional no requerido porque el Upsert es quien responde *@
+<form method="post" enctype="multipart/form-data" asp-action="Upsert">
 
     <input asp-for="Vehicle.Id" hidden />
+    <input asp-for="Vehicle.PictureUrl" hidden />
 
     <div class="border p-3 mt-4">
         <div class="row pb-2">
