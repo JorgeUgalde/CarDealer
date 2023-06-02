@@ -12,6 +12,7 @@ namespace CarDealer.Repository
         public IVehicleModelRepository VehicleModel { get; private set; }
 
         public IVehicleRepository Vehicle { get; private set; }
+        public object VehicleVM { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public UnitOfWork(ApplicationDbContext db)
         {

@@ -6,6 +6,8 @@
         IVehicleModelRepository VehicleModel { get; }
 
         IVehicleRepository Vehicle { get; }
+        object VehicleVM { get; set; }
+
         void Save();
 
     }

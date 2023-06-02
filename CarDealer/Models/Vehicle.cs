@@ -26,7 +26,7 @@ namespace CarDealer.Models
         public double Price { get; set; }
 
 
-        public string PictureUrl { get; set; }
+        public string? PictureUrl { get; set; }
 
     }
 
