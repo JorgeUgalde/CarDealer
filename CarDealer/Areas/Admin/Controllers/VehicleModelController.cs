@@ -1,17 +1,24 @@
 ﻿using CarDealer.Models;
 using CarDealer.Models.ViewModels;
 using CarDealer.Repository.Interfaces;
+using CarDealer.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.JSInterop.Implementation;
+using System.Data;
 
 namespace CarDealer.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
+    [Authorize(Roles = CarDealerRoles.Role_Admin)]
     public class VehicleModelController : Controller
     {
+
+
         private readonly IUnitOfWork _unitOfWork;
+
         public VehicleModelController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -61,7 +68,8 @@ namespace CarDealer.Areas.Admin.Controllers
                 _unitOfWork.Save();
                 TempData["success"] = "Model saved successfully";
             }
-            else { 
+            else
+            {
                 TempData["error"] = "Error creating model";
             }
             return RedirectToAction("Index");
@@ -72,7 +80,8 @@ namespace CarDealer.Areas.Admin.Controllers
         #region API
 
         [HttpGet]
-        public IActionResult GetAll() {
+        public IActionResult GetAll()
+        {
             var modelList = _unitOfWork.VehicleModel.GetAll(includeProperties: "Make");
             return Json(new { data = modelList });
         }
@@ -92,8 +101,8 @@ namespace CarDealer.Areas.Admin.Controllers
         }
 
 
-            #endregion
+        #endregion
 
 
-        }
+    }
 }

@@ -1,11 +1,14 @@
 ﻿using CarDealer.Data;
 using CarDealer.Models;
 using CarDealer.Repository.Interfaces;
+using CarDealer.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarDealer.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = CarDealerRoles.Role_Admin)]
     public class MakeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -40,11 +43,12 @@ namespace CarDealer.Areas.Admin.Controllers
                 _unitOfWork.Save();
                 TempData["success"] = "Make created successfully";
             }
-            else {
+            else
+            {
                 TempData["error"] = "Error creating make";
             }
 
-           
+
             return RedirectToAction("Index");
 
         }
@@ -128,3 +132,4 @@ namespace CarDealer.Areas.Admin.Controllers
 
     }
 }
+

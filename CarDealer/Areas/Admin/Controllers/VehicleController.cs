@@ -2,18 +2,23 @@
 using CarDealer.Models;
 using CarDealer.Models.ViewModels;
 using CarDealer.Repository.Interfaces;
+using CarDealer.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing.Constraints;
+using System.Data;
 
 namespace CarDealer.Areas.Admin.Controllers
 {
+    [Authorize(Roles = CarDealerRoles.Role_Admin)]
     [Area("Admin")]
+
     public class VehicleController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
         private IWebHostEnvironment _webHostEnvironment;
-
 
         public VehicleController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
         {
@@ -95,18 +100,21 @@ namespace CarDealer.Areas.Admin.Controllers
                     var extension = Path.GetExtension(file.FileName);
 
 
-                    if (_vehicleVm.Vehicle.PictureUrl != null) // para las notificaciones
+
+                    if (_vehicleVm.Vehicle.PictureUrl != null) //Para las modificaciones
                     {
-                        var oldImageURL = Path.Combine(wwwRootPath, _vehicleVm.Vehicle.PictureUrl); //img vieja
-                        if (System.IO.File.Exists(oldImageURL))
+                        var oldImageUrl = Path.Combine(wwwRootPath, _vehicleVm.Vehicle.PictureUrl);
+                        if (System.IO.File.Exists(oldImageUrl))
                         {
-                            System.IO.File.Delete(oldImageURL);
+                            System.IO.File.Delete(oldImageUrl);
                         }
                     }
-                    using (var fileStrams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+
+                    using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                     {
-                        file.CopyTo(fileStrams);
+                        file.CopyTo(fileStreams);
                     }
+
                     _vehicleVm.Vehicle.PictureUrl = @"images\vehicles\" + fileName + extension;
 
                 }
@@ -117,12 +125,17 @@ namespace CarDealer.Areas.Admin.Controllers
                     _unitOfWork.Vehicle.Update(_vehicleVm.Vehicle);
 
                 _unitOfWork.Save();
-                TempData["Succes"] = "Vehicle saved succesfully";
+                TempData["Success"] = "Vehicle saved successfully";
             }
+
             return RedirectToAction("Index");
         }
 
 
+        public IActionResult EjecutarXYZ()
+        {
+            return RedirectToAction("Index");
+        }
 
 
 
@@ -171,15 +184,17 @@ namespace CarDealer.Areas.Admin.Controllers
         {
             string wwwRootPath = _webHostEnvironment.WebRootPath;
 
+
             var vehicleToDelete = _unitOfWork.Vehicle.Get(u => u.Id == id);
 
             if (vehicleToDelete == null)
                 return Json(new { success = false, message = "Error while deleting" });
 
-            var oldImageURL = Path.Combine(wwwRootPath, vehicleToDelete.PictureUrl); //img vieja
-            if (System.IO.File.Exists(oldImageURL))
+
+            var oldImageUrl = Path.Combine(wwwRootPath, vehicleToDelete.PictureUrl);
+            if (System.IO.File.Exists(oldImageUrl))
             {
-                System.IO.File.Delete(oldImageURL);
+                System.IO.File.Delete(oldImageUrl);
             }
 
             _unitOfWork.Vehicle.Remove(vehicleToDelete);
@@ -187,6 +202,9 @@ namespace CarDealer.Areas.Admin.Controllers
 
             return Json(new { success = true, message = "Deleted successfully" });
         }
+
+
+
 
         #endregion
 
