@@ -21,7 +21,7 @@
 
         <div class="mb-3">
             <label asp-for="Vehicle.Description" class="p-0"></label>
-            <div class="form-control" readonly>@Model.Vehicle.Description</div>
+            <div class="form-control" readonly>@Html.Raw(Model.Vehicle.Description)</div>
         </div>
 
     </div>
